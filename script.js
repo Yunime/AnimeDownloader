@@ -1,9 +1,9 @@
-var aniworldextractor = require('./lib/AniWorld_Extractor');
-var datamanager = require('./manageFiles');
+var aniworldextractor = require('./lib/yunime/AniWorld_Extractor');
+var datamanager = require('./lib/external/manageFiles');
 const request = require('request');
 const fs = require('fs');
-var logger = require('./lib/logger.js');
-var string = require('./lib/string.js')
+var logger = require('./lib/external/logger.js');
+var string = require('./lib/external/string.js')
 
 //sudo dockerd
 //sudo chmod 666 /var/run/docker.sock
