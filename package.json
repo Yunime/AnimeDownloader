@@ -1,0 +1,13 @@
+{
+    "name": "anime-autoload",
+    "version": "1.0.25",
+    "description": "Load anime on plex",
+    "author": "lukescrewdriver",
+    "main": "script.js",
+    "scripts": {
+        "start": "node script.js"
+    },
+    "dependencies": {
+        "request": "^2.88.2"
+    }
+}
