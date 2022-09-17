@@ -1,3 +1,7 @@
+
+/data
+/lib
+
 # Logs
 logs
 *.log
