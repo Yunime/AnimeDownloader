@@ -2,6 +2,9 @@
 /data
 /lib
 
+compile.sh
+export.sh
+
 # Logs
 logs
 *.log
