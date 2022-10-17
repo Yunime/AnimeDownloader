@@ -1,5 +1,6 @@
 /data
 /download
-/LOG
 /node_modules
-/animedownloader.tar
+/LOG
+animedownloader.tar
+

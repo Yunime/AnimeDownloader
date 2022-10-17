@@ -5,7 +5,7 @@ var managerFolders = require('./lib/LS/managerFolders')
 var json = require('./lib/LS/json')
 var downloader = require('./lib/AnimeDownloader/download')
 
-const VERSION = "01.04"
+const VERSION = "01.05"
 
 logger.info("script.js", "Version: " + VERSION)
 
@@ -16,7 +16,8 @@ const FILE_DATA = "data.json"
 const PATH_DATA = "./data/"
 const PATH_DOWNLOAD = "./download/"
 var dataProgram = {
-    scanTimeMs: 200000,
+    minScanTimeMinute: 5,
+    maxScanTimeMinute: 10,
     maxDownload: 5,
     list: []
 }
@@ -82,12 +83,12 @@ var getAnime = (data) => new Promise((resolve, reject) => {
 
 
 function scanLibrary() {
-    var min = 5,
-        max = 20;
-    var rand = Math.floor(Math.random() * (max - min + 1) + min); //Generate Random number between 5 - 10
+
+    var rand = Math.floor(Math.random() * (dataProgram.maxScanTimeMinute - dataProgram.minScanTimeMinute + 1) + dataProgram.minScanTimeMinute); //Generate Random number between 5 - 10
     
     var tasks = [];
 
+    logger.info("script.js",'Start scan');
     dataProgram.list.forEach(element => {
         tasks.push(getAnime(element))
     });
