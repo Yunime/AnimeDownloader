@@ -1,18 +1,11 @@
 {
+    "scanTimeMs": 200000,
+    "maxDownload": 5,
     "list": [
-        "one piece",
-        "Sono Bisque Doll"
-    ],
-    "one piece": {
-        "pathsave": "./data/One Piece",
-        "filename": "One Piece",
-        "season": "20",
-        "downloadType":"last"
-    },
-    "Sono Bisque Doll": {
-        "pathsave": "./data/Sono Bisque Doll",
-        "filename": "Sono Bisque Doll wa Koi wo Suru",
-        "season": "01",
-        "downloadType":"all"
-    }
+        {
+            "animeName": "Golden kamuy",
+            "downloadType": "latest",
+            "seasonIndex": 4
+        }
+    ]
 }
