@@ -5,7 +5,7 @@ var managerFolders = require('./lib/LS/managerFolders')
 var json = require('./lib/LS/json')
 var downloader = require('./lib/AnimeDownloader/download')
 
-const VERSION = "01.05"
+const VERSION = "01.06"
 
 logger.info("script.js", "Version: " + VERSION)
 
@@ -34,10 +34,10 @@ if (managerFiles.exists(PATH_DATA + FILE_DATA)) {
     if (json.isJsonValid(str))
         dataProgram = JSON.parse(str)
     else
-        managerFiles.write(PATH_DATA + FILE_DATA, JSON.stringify(dataProgram))
+        managerFiles.write(PATH_DATA + FILE_DATA, JSON.stringify(dataProgram, null, "\t"))
 }
 else
-    managerFiles.write(PATH_DATA + FILE_DATA, JSON.stringify(dataProgram))
+    managerFiles.write(PATH_DATA + FILE_DATA, JSON.stringify(dataProgram, null, "\t"))
 
 
 
@@ -55,14 +55,18 @@ var getAnime = (data) => new Promise((resolve, reject) => {
         case 'latest':
         default:
             logger.info("script.js", data.animeName + " " + data.seasonIndex + " Downloading options: latest")
-            aniworldextractor.getLastEpIndex(data.animeName + " " + data.seasonIndex)
+            var searchString = data.animeName
+            if (Number(data.seasonIndex) > 1)
+                searchString = searchString + " " + data.seasonIndex
+
+            aniworldextractor.getLastEpIndex(searchString)
                 .then(indexLast => {
                     var fileName = data.seasonIndex + "X" + indexLast + "_" + data.animeName + ".mp4"
                     var filePath = PATH_DOWNLOAD + "/" + data.animeName + "/Season " + data.seasonIndex + "/"
                     managerFolders.createIfNotExists(filePath)
 
                     if (!managerFiles.exists(filePath + fileName)) {
-                        aniworldextractor.getEpisodeLink(data.animeName + " " + data.seasonIndex, indexLast)
+                        aniworldextractor.getEpisodeLink(searchString, indexLast)
                             .then(link => {
                                 logger.info("script.js", "Downloading " + data.animeName + " " + data.seasonIndex + " Episode: " + indexLast)
                                 downloader.downloadMedia(link, filePath + fileName).then(success => {
@@ -70,11 +74,11 @@ var getAnime = (data) => new Promise((resolve, reject) => {
                                 })
                             })
                     }
-                    else{
-                        logger.info("script.js", data.animeName + " " + data.seasonIndex + " Episode: " + indexLast+ " Already exists. Skip")
+                    else {
+                        logger.info("script.js", data.animeName + " " + data.seasonIndex + " Episode: " + indexLast + " Already exists. Skip")
                         resolve()
                     }
-                        
+
 
                 })
             break;
@@ -85,20 +89,20 @@ var getAnime = (data) => new Promise((resolve, reject) => {
 function scanLibrary() {
 
     var rand = Math.floor(Math.random() * (dataProgram.maxScanTimeMinute - dataProgram.minScanTimeMinute + 1) + dataProgram.minScanTimeMinute); //Generate Random number between 5 - 10
-    
+
     var tasks = [];
 
-    logger.info("script.js",'Start scan');
+    logger.info("script.js", 'Start scan');
     dataProgram.list.forEach(element => {
         tasks.push(getAnime(element))
     });
 
 
     Promise.all(tasks).then(d => {// when all tasks are done put out the result
-        logger.info("script.js",'Wait for ' + rand + ' minutes');
+        logger.info("script.js", 'Wait for ' + rand + ' minutes');
         setTimeout(scanLibrary, rand * 60000);//
     })
-    
+
 }
 
 scanLibrary()
