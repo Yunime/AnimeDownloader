@@ -5,7 +5,7 @@ var managerFolders = require('./lib/LS/managerFolders')
 var json = require('./lib/LS/json')
 var downloader = require('./lib/AnimeDownloader/download')
 
-const VERSION = "01.07"
+const VERSION = "01.08"
 
 logger.info("script.js", "Version: " + VERSION)
 
@@ -46,32 +46,46 @@ else
 
 var getAnime = (data) => new Promise((resolve, reject) => {
 
-    switch (data.downloadType) {
-        case 'all':
-            logger.info("script.js", data.animeName + " " + data.seasonIndex + " Downloading options: all")
-            logger.error("script.js", data.animeName + " " + data.seasonIndex + " Downloading options not yet implemented")
-            resolve()
-            break;
+    var searchString = data.animeName
+    if (Number(data.seasonIndex) > 1 && !data.longTermAnime)
+        searchString = searchString + " " + data.seasonIndex
 
-        case 'latest':
-        default:
-            logger.info("script.js", data.animeName + " " + data.seasonIndex + " Downloading options: latest")
-            var searchString = data.animeName
-            if (Number(data.seasonIndex) > 1 && !data.longTermAnime)
-                searchString = searchString + " " + data.seasonIndex
+    aniworldextractor.getLastEpIndex(searchString)
+        .then(indexLast => {
+            var filePath = PATH_DOWNLOAD + "/" + data.animeName + "/Season " + data.seasonIndex + "/"
+            managerFolders.createIfNotExists(filePath)
 
-            aniworldextractor.getLastEpIndex(searchString)
-                .then(indexLast => {
+            switch (data.downloadType) {
+                case 'all':
+                    logger.info("script.js", data.animeName + " " + data.seasonIndex + " Downloading options: all")
+
+                    var episodes = []
+                    for (let index = 1; index <= indexLast; index++) {
+                        var fileName = data.seasonIndex + "X" + index + "_" + data.animeName + ".mp4"
+                        if (!managerFiles.exists(filePath + fileName) && episodes.length < dataProgram.maxDownload) {
+                            logger.info("script.js", "Downloading " + data.animeName + " " + data.seasonIndex + " Episode: " + index)
+                            episodes.push(getvideo(searchString, index, filePath + fileName))
+                        }
+
+                    }
+
+                    Promise.all(episodes).then(d => {
+                        resolve()
+                    })
+
+                    break;
+
+                case 'latest':
+                default:
+                    logger.info("script.js", data.animeName + " " + data.seasonIndex + " Downloading options: latest")
+
                     var fileName = data.seasonIndex + "X" + indexLast + "_" + data.animeName + ".mp4"
-                    var filePath = PATH_DOWNLOAD + "/" + data.animeName + "/Season " + data.seasonIndex + "/"
-                    managerFolders.createIfNotExists(filePath)
-
                     if (!managerFiles.exists(filePath + fileName)) {
                         aniworldextractor.getEpisodeLink(searchString, indexLast)
                             .then(link => {
                                 logger.info("script.js", "Downloading " + data.animeName + " " + data.seasonIndex + " Episode: " + indexLast)
                                 downloader.downloadMedia(link, filePath + fileName).then(success => {
-                                    logger.info("script.js", data.animeName + " " + data.seasonIndex + " Episode: " + indexLast +" Download complete!")
+                                    logger.info("script.js", data.animeName + " " + data.seasonIndex + " Episode: " + indexLast + " Download complete!")
                                     resolve()
                                 })
                             })
@@ -80,13 +94,21 @@ var getAnime = (data) => new Promise((resolve, reject) => {
                         logger.info("script.js", data.animeName + " " + data.seasonIndex + " Episode: " + indexLast + " Already exists. Skip")
                         resolve()
                     }
+                    break;
+            }
+        })
 
-
-                })
-            break;
-    }
 })
 
+
+var getvideo = (searchString, index, path) => new Promise((resolve, reject) => {
+    aniworldextractor.getEpisodeLink(searchString, index)
+        .then(link => {
+            downloader.downloadMedia(link, path).then(success => {
+                resolve()
+            })
+        })
+})
 
 function scanLibrary() {
 
@@ -113,3 +135,7 @@ scanLibrary()
 
 
 
+process.on('uncaughtException', function (err) {
+    logger.error("script.js",err + "\n" + err.stack);
+    process.exit();
+})

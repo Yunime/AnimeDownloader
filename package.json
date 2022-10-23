@@ -6,8 +6,5 @@
     "main": "script.js",
     "scripts": {
         "start": "node script.js"
-    },
-    "dependencies": {
-        "request": "^2.88.2"
     }
 }
