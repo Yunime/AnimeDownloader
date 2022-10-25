@@ -3,7 +3,7 @@ var logger = require('./lib/LS/logger')
 var managerFiles = require('./lib/LS/managerFiles')
 var managerFolders = require('./lib/LS/managerFolders')
 var json = require('./lib/LS/json')
-var downloader = require('./lib/AnimeDownloader/download')
+var downloader = require('./lib/LS/downloader')
 
 const VERSION = "01.08"
 

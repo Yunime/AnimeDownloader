@@ -6,5 +6,8 @@
     "main": "script.js",
     "scripts": {
         "start": "node script.js"
+    },
+    "dependencies": {
+        "node-fetch": "^2.6.7"
     }
 }
