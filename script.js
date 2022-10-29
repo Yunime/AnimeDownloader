@@ -1,9 +1,9 @@
 var aniworldextractor = require('./lib/yunime/AniWorld_Extractor');
-var logger = require('./lib/LS/logger')
-var managerFiles = require('./lib/LS/managerFiles')
-var managerFolders = require('./lib/LS/managerFolders')
-var json = require('./lib/LS/json')
-var downloader = require('./lib/LS/downloader')
+var logger = require('./lib/LS-Common-Lib/node-js/logger')
+var managerFiles = require('./lib/LS-Common-Lib/node-js/managerFiles')
+var managerFolders = require('./lib/LS-Common-Lib/node-js/managerFolders')
+var json = require('./lib/LS-Common-Lib/node-js/json')
+var downloader = require('./lib/LS-Common-Lib/node-js/downloader')
 
 const VERSION = "01.08"
 
