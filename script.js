@@ -23,6 +23,7 @@ var dataProgram = {
 }
 
 //animeName:
+//link
 //downloadType: all latest
 //seasonIndex: 
 //longTermAnime: true false
@@ -50,7 +51,7 @@ var getAnime = (data) => new Promise((resolve, reject) => {
     if (Number(data.seasonIndex) > 1 && !data.longTermAnime)
         searchString = searchString + " " + data.seasonIndex
 
-    aniworldextractor.getLastEpIndex(searchString)
+    aniworldextractor.getLastEpIndex(data.link)
         .then(indexLast => {
             var filePath = PATH_DOWNLOAD + "/" + data.animeName + "/Season " + data.seasonIndex + "/"
             managerFolders.createIfNotExists(filePath)
@@ -64,7 +65,7 @@ var getAnime = (data) => new Promise((resolve, reject) => {
                         var fileName = data.seasonIndex + "X" + index + "_" + data.animeName + ".mp4"
                         if (!managerFiles.exists(filePath + fileName) && episodes.length < dataProgram.maxDownload) {
                             logger.info("script.js", "Downloading " + data.animeName + " " + data.seasonIndex + " Episode: " + index)
-                            episodes.push(getvideo(searchString, index, filePath + fileName))
+                            episodes.push(getvideo(data.link, index, filePath + fileName))
                         }
                     }
 
@@ -80,10 +81,10 @@ var getAnime = (data) => new Promise((resolve, reject) => {
 
                     var fileName = data.seasonIndex + "X" + indexLast + "_" + data.animeName + ".mp4"
                     if (!managerFiles.exists(filePath + fileName)) {
-                        aniworldextractor.getEpisodeLink(searchString, indexLast)
+                        aniworldextractor.getEpisodeLink(data.link, indexLast)
                             .then(link => {
                                 logger.info("script.js", "Downloading " + data.animeName + " " + data.seasonIndex + " Episode: " + indexLast)
-                                downloader.downloadMedia(link, filePath + fileName).then(success => {
+                                getvideo(data.link, indexLast, filePath + fileName).then(success => {
                                     logger.info("script.js", data.animeName + " " + data.seasonIndex + " Episode: " + indexLast + " Download complete!")
                                     resolve()
                                 })
@@ -100,8 +101,8 @@ var getAnime = (data) => new Promise((resolve, reject) => {
 })
 
 
-var getvideo = (searchString, index, path) => new Promise((resolve, reject) => {
-    aniworldextractor.getEpisodeLink(searchString, index)
+var getvideo = (pageLink, index, path) => new Promise((resolve, reject) => {
+    aniworldextractor.getEpisodeLink(pageLink, index)
         .then(link => {
             downloader.downloadMedia(link, path).then(success => {
                 resolve()
