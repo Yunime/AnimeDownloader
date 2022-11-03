@@ -1,3 +1,6 @@
 [submodule "LS-Common-Lib"]
 	path = lib/LS-Common-Lib
 	url = https://github.com/LucaSoftware/LS-Common-Lib
+[submodule "AnimeworldAPI"]
+	path = lib/AnimeworldAPI
+	url = https://github.com/Yunime/AnimeworldAPI

@@ -1,4 +1,4 @@
-var aniworldextractor = require('./lib/yunime/AniWorld_Extractor');
+var aniworldextractor = require('./lib/AnimeworldAPI/AniWorld_Extractor');
 var logger = require('./lib/LS-Common-Lib/node-js/logger')
 var managerFiles = require('./lib/LS-Common-Lib/node-js/managerFiles')
 var managerFolders = require('./lib/LS-Common-Lib/node-js/managerFolders')
@@ -66,7 +66,6 @@ var getAnime = (data) => new Promise((resolve, reject) => {
                             logger.info("script.js", "Downloading " + data.animeName + " " + data.seasonIndex + " Episode: " + index)
                             episodes.push(getvideo(searchString, index, filePath + fileName))
                         }
-
                     }
 
                     Promise.all(episodes).then(d => {
